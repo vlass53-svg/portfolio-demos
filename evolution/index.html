@@ -1,0 +1,371 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Первичный бульон</title>
+<style>
+/* layout: canvas "pond" fills left, control/telemetry rail fixed-width on the right; stacks on phone */
+:root{
+  --bg:#0b1f1c;
+  --surface:#102723;
+  --surface-2:#163530;
+  --fg:#eaf2ef;
+  --muted:#7fa89d;
+  --accent:#ff8a5c;
+  --accent-2:#5ecbb3;
+  --line:#1e3d37;
+  --font-display:'Literata',Georgia,serif;
+  --font-body:'Literata',Georgia,serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f3f0e8; --surface:#ffffff; --surface-2:#eceadf; --fg:#17221f;
+    --muted:#5a6f69; --accent:#d9602f; --accent-2:#1f8f73; --line:#dcd6c4;
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f3f0e8; --surface:#ffffff; --surface-2:#eceadf; --fg:#17221f;
+  --muted:#5a6f69; --accent:#d9602f; --accent-2:#1f8f73; --line:#dcd6c4;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--fg); font-family:var(--font-body);
+  margin:0; min-height:100%;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+}
+h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0}
+.wrap{max-width:1280px; margin:0 auto; padding-block:28px 48px}
+header{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px}
+header h1{font-size:28px; font-weight:600; letter-spacing:-0.01em}
+header p{margin:4px 0 0; color:var(--muted); font-size:14px; max-width:46ch}
+.eyebrow{font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-2)}
+.layout{display:grid; grid-template-columns:1fr 320px; gap:18px}
+@media (max-width:860px){.layout{grid-template-columns:1fr}}
+.pond-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px; min-width:0}
+.pond-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-family:var(--font-mono); font-size:12px; color:var(--muted)}
+canvas{width:100%; height:auto; display:block; border-radius:8px; background:radial-gradient(ellipse at 50% 20%, var(--surface-2), var(--bg)); touch-action:none}
+.rail{display:flex; flex-direction:column; gap:14px; min-width:0}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px}
+.card h2{font-size:13px; font-family:var(--font-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:12px}
+.btnrow{display:flex; gap:8px; flex-wrap:wrap}
+button{
+  font-family:var(--font-mono); font-size:12px; letter-spacing:.04em; text-transform:uppercase;
+  border:1px solid var(--line); background:var(--surface-2); color:var(--fg);
+  border-radius:8px; padding:9px 14px; cursor:pointer;
+}
+button:hover{border-color:var(--accent)}
+button:focus-visible, input:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+button.primary{background:var(--accent); color:#1a0e08; border-color:var(--accent); font-weight:600}
+.field{display:flex; flex-direction:column; gap:6px; margin-top:12px}
+.field label{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); font-family:var(--font-mono)}
+.field label span.val{color:var(--fg); font-variant-numeric:tabular-nums}
+input[type=range]{width:100%; accent-color:var(--accent)}
+.stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.stat{background:var(--surface-2); border-radius:10px; padding:10px 12px}
+.stat .n{font-family:var(--font-mono); font-size:20px; font-variant-numeric:tabular-nums; color:var(--accent-2)}
+.stat .l{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-top:2px}
+.chart{width:100%; height:90px; display:block}
+.legend{display:flex; gap:14px; font-size:11px; color:var(--muted); font-family:var(--font-mono); margin-top:8px; flex-wrap:wrap}
+.legend span{display:inline-flex; align-items:center; gap:5px}
+.dot{width:8px; height:8px; border-radius:50%; display:inline-block}
+footer{margin-top:28px; font-size:12px; color:var(--muted); font-family:var(--font-mono); border-top:1px solid var(--line); padding-top:14px}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Симуляция естественного отбора · поколение за поколением</div>
+      <h1>Первичный бульон</h1>
+      <p>Популяция клеток с генами скорости, размера и зрения живёт в пруду, ищет пищу и размножается с мутациями. Наблюдайте, как признаки смещаются под давлением отбора.</p>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="pond-card">
+      <div class="pond-head">
+        <span id="genLabel">ПОКОЛЕНИЕ 1</span>
+        <span id="timeLabel">t = 0s</span>
+      </div>
+      <canvas id="pond" width="900" height="600"></canvas>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--accent-2)"></i>пища</span>
+        <span><i class="dot" style="background:var(--accent)"></i>размер ∝ особь</span>
+        <span>оттенок ∝ скорость (холодный = медленный, тёплый = быстрый)</span>
+      </div>
+    </div>
+
+    <div class="rail">
+      <div class="card">
+        <h2>Управление</h2>
+        <div class="btnrow">
+          <button class="primary" id="toggleBtn">Пауза</button>
+          <button id="resetBtn">Сбросить</button>
+        </div>
+        <div class="field">
+          <label>Скорость симуляции <span class="val" id="speedVal">1×</span></label>
+          <input type="range" id="speedRange" min="0.5" max="4" step="0.5" value="1">
+        </div>
+        <div class="field">
+          <label>Частота мутаций <span class="val" id="mutVal">6%</span></label>
+          <input type="range" id="mutRange" min="0" max="25" step="1" value="6">
+        </div>
+        <div class="field">
+          <label>Пищи в пруду <span class="val" id="foodVal">40</span></label>
+          <input type="range" id="foodRange" min="10" max="120" step="5" value="40">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Телеметрия</h2>
+        <div class="stat-grid">
+          <div class="stat"><div class="n" id="popStat">0</div><div class="l">Популяция</div></div>
+          <div class="stat"><div class="n" id="genStat">1</div><div class="l">Поколение</div></div>
+          <div class="stat"><div class="n" id="spdStat">0.0</div><div class="l">Ср. скорость</div></div>
+          <div class="stat"><div class="n" id="sizeStat">0.0</div><div class="l">Ср. размер</div></div>
+        </div>
+        <canvas class="chart" id="popChart" width="600" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <footer>Canvas 2D, собственная генно-мутационная модель, без внешних библиотек · демо-проект портфолио</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var canvas = document.getElementById('pond');
+  var ctx = canvas.getContext('2d');
+  var popCanvas = document.getElementById('popChart');
+  var popCtx = popCanvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+  var running = true, simSpeed = 1, mutRate = 0.06, foodTarget = 40;
+  var time = 0, generation = 1;
+  var creatures = [], food = [];
+  var popHistory = [];
+
+  function rand(a,b){ return a + Math.random()*(b-a); }
+  function clamp(v,a,b){ return Math.max(a, Math.min(b,v)); }
+
+  function makeCreature(x,y,genes,energy){
+    return {
+      x: x, y: y,
+      vx: rand(-1,1), vy: rand(-1,1),
+      genes: genes || { speed: rand(0.6,1.8), size: rand(0.6,1.6), vision: rand(30,90) },
+      energy: energy==null ? 60 : energy,
+      age: 0
+    };
+  }
+
+  function seedPopulation(n){
+    creatures = [];
+    for (var i=0;i<n;i++){
+      creatures.push(makeCreature(rand(20,W-20), rand(20,H-20)));
+    }
+  }
+
+  function seedFood(){
+    while (food.length < foodTarget){
+      food.push({ x: rand(10,W-10), y: rand(10,H-10) });
+    }
+  }
+
+  function mutate(v, scale){
+    var delta = (Math.random()*2-1) * scale * mutRate * 10;
+    return v + delta;
+  }
+
+  function reproduce(parent){
+    var genes = {
+      speed: clamp(mutate(parent.genes.speed, 0.08), 0.3, 3.2),
+      size: clamp(mutate(parent.genes.size, 0.08), 0.4, 2.6),
+      vision: clamp(mutate(parent.genes.vision, 4), 15, 160)
+    };
+    parent.energy -= 35;
+    return makeCreature(parent.x + rand(-12,12), parent.y + rand(-12,12), genes, 35);
+  }
+
+  function speedColor(speed){
+    var t = clamp((speed-0.3)/(3.2-0.3), 0, 1);
+    var hue = 200 - t*170;
+    return 'hsl(' + hue + ', 80%, 62%)';
+  }
+
+  function step(dt){
+    time += dt;
+    seedFood();
+
+    for (var i=creatures.length-1;i>=0;i--){
+      var c = creatures[i];
+      c.age += dt;
+
+      var nearest = null, nd = Infinity;
+      for (var j=0;j<food.length;j++){
+        var f = food[j];
+        var dx = f.x-c.x, dy = f.y-c.y;
+        var d = dx*dx+dy*dy;
+        if (d < nd){ nd = d; nearest = f; }
+      }
+      var visionSq = c.genes.vision*c.genes.vision;
+      if (nearest && nd < visionSq){
+        var dx2 = nearest.x-c.x, dy2 = nearest.y-c.y;
+        var len = Math.sqrt(dx2*dx2+dy2*dy2) || 1;
+        c.vx = dx2/len; c.vy = dy2/len;
+      } else if (Math.random() < 0.04){
+        var a = rand(0, Math.PI*2);
+        c.vx = Math.cos(a); c.vy = Math.sin(a);
+      }
+
+      var speed = c.genes.speed * 28 * dt;
+      c.x = clamp(c.x + c.vx*speed, 6, W-6);
+      c.y = clamp(c.y + c.vy*speed, 6, H-6);
+
+      var upkeep = (0.8 + c.genes.size*0.6 + c.genes.speed*0.5) * dt * 4;
+      c.energy -= upkeep;
+
+      if (nearest){
+        var dx3 = nearest.x-c.x, dy3 = nearest.y-c.y;
+        if (dx3*dx3+dy3*dy3 < 70){
+          c.energy += 26;
+          food.splice(food.indexOf(nearest),1);
+        }
+      }
+
+      if (c.energy <= 0){ creatures.splice(i,1); continue; }
+      if (c.energy > 85 && creatures.length < 260){
+        creatures.push(reproduce(c));
+      }
+    }
+
+    if (creatures.length < 4){
+      generation++;
+      seedPopulation(18);
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = getComputedStyle(canvas).getPropertyValue('--accent-2') || '#5ecbb3';
+    for (var i=0;i<food.length;i++){
+      ctx.beginPath();
+      ctx.globalAlpha = 0.85;
+      ctx.arc(food[i].x, food[i].y, 2.6, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    for (var k=0;k<creatures.length;k++){
+      var c = creatures[k];
+      var r = 3 + c.genes.size*3.2;
+      ctx.beginPath();
+      ctx.fillStyle = speedColor(c.genes.speed);
+      ctx.globalAlpha = clamp(c.energy/90, 0.35, 1);
+      ctx.arc(c.x, c.y, r, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function avgGene(key){
+    if (!creatures.length) return 0;
+    var s = 0;
+    for (var i=0;i<creatures.length;i++) s += creatures[i].genes[key];
+    return s/creatures.length;
+  }
+
+  function drawPopChart(){
+    var w = popCanvas.width, h = popCanvas.height;
+    popCtx.clearRect(0,0,w,h);
+    if (popHistory.length < 2) return;
+    var max = Math.max(10, Math.max.apply(null, popHistory));
+    var muted = getComputedStyle(popCanvas).getPropertyValue('--line') || '#1e3d37';
+    popCtx.strokeStyle = muted;
+    popCtx.lineWidth = 1;
+    for (var g=1; g<4; g++){
+      var gy = h - (h*g/4);
+      popCtx.beginPath(); popCtx.moveTo(0,gy); popCtx.lineTo(w,gy); popCtx.stroke();
+    }
+    popCtx.beginPath();
+    var accent = getComputedStyle(popCanvas).getPropertyValue('--accent-2') || '#5ecbb3';
+    popCtx.strokeStyle = accent;
+    popCtx.lineWidth = 2;
+    var step = w / (popHistory.length-1);
+    for (var i=0;i<popHistory.length;i++){
+      var x = i*step;
+      var y = h - (popHistory[i]/max)*h*0.92 - 4;
+      if (i===0) popCtx.moveTo(x,y); else popCtx.lineTo(x,y);
+    }
+    popCtx.stroke();
+    popCtx.lineTo(w, h); popCtx.lineTo(0,h); popCtx.closePath();
+    popCtx.globalAlpha = 0.12;
+    popCtx.fillStyle = accent;
+    popCtx.fill();
+    popCtx.globalAlpha = 1;
+  }
+
+  var lastTick = null, historyClock = 0;
+  function loop(ts){
+    if (lastTick==null) lastTick = ts;
+    var dt = Math.min((ts-lastTick)/1000, 0.1) * simSpeed;
+    lastTick = ts;
+    if (running){
+      step(dt);
+      historyClock += dt;
+      if (historyClock > 0.4){
+        historyClock = 0;
+        popHistory.push(creatures.length);
+        if (popHistory.length > 80) popHistory.shift();
+      }
+    }
+    draw();
+    drawPopChart();
+
+    document.getElementById('genLabel').textContent = 'ПОКОЛЕНИЕ ' + generation;
+    document.getElementById('timeLabel').textContent = 't = ' + time.toFixed(0) + 's';
+    document.getElementById('popStat').textContent = creatures.length;
+    document.getElementById('genStat').textContent = generation;
+    document.getElementById('spdStat').textContent = avgGene('speed').toFixed(2);
+    document.getElementById('sizeStat').textContent = avgGene('size').toFixed(2);
+
+    requestAnimationFrame(loop);
+  }
+
+  function reset(){
+    time = 0; generation = 1; popHistory = [];
+    seedPopulation(24);
+    food = [];
+    seedFood();
+  }
+
+  document.getElementById('toggleBtn').addEventListener('click', function(){
+    running = !running;
+    this.textContent = running ? 'Пауза' : 'Продолжить';
+  }, {passive:true});
+  document.getElementById('resetBtn').addEventListener('click', reset, {passive:true});
+  document.getElementById('speedRange').addEventListener('input', function(e){
+    simSpeed = parseFloat(e.target.value);
+    document.getElementById('speedVal').textContent = simSpeed + '×';
+  });
+  document.getElementById('mutRange').addEventListener('input', function(e){
+    mutRate = parseFloat(e.target.value)/100;
+    document.getElementById('mutVal').textContent = e.target.value + '%';
+  });
+  document.getElementById('foodRange').addEventListener('input', function(e){
+    foodTarget = parseFloat(e.target.value);
+    document.getElementById('foodVal').textContent = e.target.value;
+  });
+
+  function start(state){
+    reset();
+    requestAnimationFrame(loop);
+  }
+  if (window.claude && window.claude.hot && window.claude.hot.ready){
+    window.claude.hot.ready(start);
+  } else {
+    start();
+  }
+})();
+</script>

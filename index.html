@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Портфолио — демопроекты</title>
+<style>
+:root{
+  --bg:#121319; --surface:#1b1d26; --surface-2:#232531;
+  --ink:#eceaf2; --muted:#9a96ad; --line:#2e2f3c;
+  --accent:#8c82ff; --teal:#5ecbb3; --amber:#e2a33d;
+  --font-ui:'Sora',system-ui,sans-serif;
+  --font-mono:'Red Hat Mono',ui-monospace,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root{ --bg:#f3f2f8; --surface:#ffffff; --surface-2:#edebf5; --ink:#1b1930; --muted:#6c6886; --line:#ddd9ee; color-scheme:light; }
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-ui);
+  padding:0 max(16px, env(safe-area-inset-left,0px)) 48px max(16px, env(safe-area-inset-right,0px));}
+.wrap{max-width:960px; margin:0 auto; padding-top:48px}
+.eyebrow{font-family:var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--teal)}
+h1{font-size:34px; font-weight:700; letter-spacing:-0.01em; margin:8px 0 10px}
+p.lead{color:var(--muted); max-width:62ch; line-height:1.55; margin:0 0 34px}
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px}
+a.card{display:block; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:22px;
+  text-decoration:none; color:var(--ink); transition:border-color .15s ease, transform .15s ease}
+a.card:hover{border-color:var(--accent); transform:translateY(-2px)}
+.tag{display:inline-block; font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em;
+  color:var(--accent); background:var(--surface-2); border-radius:999px; padding:4px 10px; margin-bottom:12px}
+.card h2{font-size:19px; margin:0 0 8px; font-weight:600}
+.card p{font-size:13.5px; color:var(--muted); line-height:1.5; margin:0 0 14px}
+.go{font-family:var(--font-mono); font-size:12px; color:var(--teal)}
+footer{margin-top:40px; font-size:12px; color:var(--muted); font-family:var(--font-mono); border-top:1px solid var(--line); padding-top:16px}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Red+Hat+Mono:wght@400;500&display=swap">
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Демопроекты · интерактивные веб-прототипы</div>
+  <h1>Портфолио</h1>
+  <p class="lead">Три самостоятельных веб-приложения — без бэкенда и сборки, чистые HTML/CSS/JS. Каждое открывается прямо в браузере.</p>
+
+  <div class="grid">
+    <a class="card" href="evolution/">
+      <span class="tag">Симуляция</span>
+      <h2>Первичный бульон</h2>
+      <p>Эволюционная симуляция естественного отбора: гены скорости, размера и зрения мутируют и отбираются из поколения в поколение. Canvas 2D, собственная модель.</p>
+      <span class="go">Открыть демо →</span>
+    </a>
+    <a class="card" href="dashboard/">
+      <span class="tag">Дашборд</span>
+      <h2>Пульс сообщества</h2>
+      <p>Аналитическая панель вовлечённости: тренды активности, каналы привлечения, удержание по когортам, сегментация аудитории. Графики — чистый SVG.</p>
+      <span class="go">Открыть демо →</span>
+    </a>
+    <a class="card" href="survey/">
+      <span class="tag">Инструмент</span>
+      <h2>Конструктор опросов</h2>
+      <p>Соберите анкету из вопросов разных типов и сразу увидьте смоделированное распределение ответов — для полевых и соц. исследований.</p>
+      <span class="go">Открыть демо →</span>
+    </a>
+  </div>
+
+  <footer>github.com/vlass53-svg · опубликовано через GitHub Pages</footer>
+</div>
+</body>
+</html>

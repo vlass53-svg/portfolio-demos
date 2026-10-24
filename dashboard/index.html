@@ -1,0 +1,301 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Пульс сообщества</title>
+<style>
+/* layout: paper dashboard — filter bar, KPI row, two-column chart row, cohort heatmap + segment table */
+:root{
+  --bg:#f6f3ec; --surface:#ffffff; --surface-2:#efe9db;
+  --ink:#1c2430; --muted:#746b58; --line:#e2dbc7;
+  --accent:#c2852b; --accent-ink:#2a1b05;
+  --teal:#2f6f68; --red:#b4482f;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'Public Sans',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15191d; --surface:#1d2227; --surface-2:#262c32;
+    --ink:#eceae2; --muted:#9aa0a6; --line:#323942;
+    --accent:#e0a24b; --accent-ink:#241802;
+    --teal:#5bbaae; --red:#e0715a;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15191d; --surface:#1d2227; --surface-2:#262c32;
+  --ink:#eceae2; --muted:#9aa0a6; --line:#323942;
+  --accent:#e0a24b; --accent-ink:#241802;
+  --teal:#5bbaae; --red:#e0715a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body);
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+}
+.wrap{max-width:1200px; margin:0 auto; padding-block:26px 48px}
+.topbar{display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:flex-end; margin-bottom:22px}
+.eyebrow{font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--teal)}
+h1{font-family:var(--font-display); font-size:30px; font-weight:600; margin:4px 0 0; text-wrap:balance}
+.filters{display:flex; gap:8px; flex-wrap:wrap}
+.pill{font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; border:1px solid var(--line); background:var(--surface); color:var(--muted); border-radius:999px; padding:7px 13px; cursor:pointer}
+.pill.active{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:16px}
+@media (max-width:760px){.kpis{grid-template-columns:1fr 1fr}}
+.kpi{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px}
+.kpi .l{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em}
+.kpi .n{font-family:var(--font-mono); font-size:26px; margin-top:6px; font-variant-numeric:tabular-nums}
+.kpi .d{font-family:var(--font-mono); font-size:12px; margin-top:4px}
+.d.up{color:var(--teal)} .d.down{color:var(--red)}
+.row{display:grid; grid-template-columns:1.5fr 1fr; gap:14px; margin-bottom:14px}
+@media (max-width:860px){.row{grid-template-columns:1fr}}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px; min-width:0}
+.card h2{font-size:13px; font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 14px}
+svg text{font-family:var(--font-mono)}
+.legend{display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--muted); margin-top:10px; font-family:var(--font-mono)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.sw{width:9px; height:9px; border-radius:2px; display:inline-block}
+table{width:100%; border-collapse:collapse; font-size:13px}
+th{text-align:left; color:var(--muted); font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:.04em; padding:6px 8px; font-family:var(--font-mono)}
+td{padding:6px 8px; border-top:1px solid var(--line); font-variant-numeric:tabular-nums}
+.heat{width:34px; height:22px; border-radius:4px; display:inline-block; text-align:center; font-family:var(--font-mono); font-size:10px; line-height:22px}
+footer{margin-top:24px; font-size:12px; color:var(--muted); font-family:var(--font-mono); border-top:1px solid var(--line); padding-top:14px}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="eyebrow">Аналитика сообщества · исследовательская панель</div>
+      <h1>Пульс сообщества</h1>
+    </div>
+    <div class="filters">
+      <button class="pill">7 дней</button>
+      <button class="pill active">30 дней</button>
+      <button class="pill">90 дней</button>
+      <button class="pill">Все сегменты ▾</button>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="l">Активные участники</div><div class="n">8 412</div><div class="d up">▲ 6.4% за период</div></div>
+    <div class="kpi"><div class="l">Удержание, 30 дней</div><div class="n">41.2%</div><div class="d up">▲ 2.1 п.п.</div></div>
+    <div class="kpi"><div class="l">Индекс лояльности (NPS)</div><div class="n">+32</div><div class="d down">▼ 3 пункта</div></div>
+    <div class="kpi"><div class="l">Среднее время в сессии</div><div class="n">6:48</div><div class="d up">▲ 0:24</div></div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h2>Активные участники по неделям</h2>
+      <svg viewBox="0 0 640 220" width="100%" height="220" role="img" aria-label="Линейный график активных участников по неделям">
+        <g id="gridlines"></g>
+        <polyline id="trendline" fill="none" stroke="var(--teal)" stroke-width="2.5" points=""/>
+        <polygon id="trendfill" fill="var(--teal)" opacity="0.12" points=""/>
+        <g id="trenddots"></g>
+        <g id="trendlabels" font-size="10" fill="var(--muted)"></g>
+      </svg>
+      <div class="legend"><span><i class="sw" style="background:var(--teal)"></i>активные участники / нед.</span></div>
+    </div>
+    <div class="card">
+      <h2>Каналы привлечения</h2>
+      <svg viewBox="0 0 280 220" width="100%" height="220" role="img" aria-label="Столбчатая диаграмма каналов привлечения">
+        <g id="bars"></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h2>Удержание по когортам (%% активных по неделям с момента входа)</h2>
+      <table id="cohortTable"></table>
+    </div>
+    <div class="card">
+      <h2>Сегменты аудитории</h2>
+      <svg viewBox="0 0 220 220" width="100%" height="200" id="donut" role="img" aria-label="Круговая диаграмма сегментов аудитории"></svg>
+      <table style="margin-top:4px">
+        <tbody id="segTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>Статичные демо-данные · SVG-графики без внешних библиотек · демо-проект портфолио</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // --- trend line: weekly active members ---
+  var weeks = [6210,6480,6390,6900,7120,7340,7180,7560,7820,7690,8010,8412];
+  (function drawTrend(){
+    var svg = document.querySelector('#trendline').ownerSVGElement;
+    var W=640,H=220,padL=36,padR=10,padT=10,padB=24;
+    var min=Math.min.apply(null,weeks), max=Math.max.apply(null,weeks);
+    min = Math.floor(min/500)*500; max = Math.ceil(max/500)*500;
+    var x=function(i){ return padL + (W-padL-padR) * (i/(weeks.length-1)); };
+    var y=function(v){ return padT + (H-padT-padB) * (1 - (v-min)/(max-min)); };
+
+    var grid = document.getElementById('gridlines');
+    var labels = document.getElementById('trendlabels');
+    for (var g=0; g<=3; g++){
+      var val = min + (max-min)*g/3;
+      var gy = y(val);
+      var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',padL); line.setAttribute('x2',W-padR);
+      line.setAttribute('y1',gy); line.setAttribute('y2',gy);
+      line.setAttribute('stroke','var(--line)'); line.setAttribute('stroke-width','1');
+      grid.appendChild(line);
+      var t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x',4); t.setAttribute('y',gy+3); t.setAttribute('fill','var(--muted)');
+      t.textContent = Math.round(val/1000*10)/10 + 'k';
+      labels.appendChild(t);
+    }
+
+    var pts = weeks.map(function(v,i){ return x(i)+','+y(v); }).join(' ');
+    document.getElementById('trendline').setAttribute('points', pts);
+    document.getElementById('trendfill').setAttribute('points',
+      x(0)+','+y(min)+' '+pts+' '+x(weeks.length-1)+','+y(min));
+
+    var dots = document.getElementById('trenddots');
+    weeks.forEach(function(v,i){
+      if (i!==weeks.length-1) return;
+      var c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx',x(i)); c.setAttribute('cy',y(v)); c.setAttribute('r',4);
+      c.setAttribute('fill','var(--teal)');
+      dots.appendChild(c);
+    });
+    [0, Math.floor(weeks.length/2), weeks.length-1].forEach(function(i){
+      var t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x',x(i)); t.setAttribute('y',H-6); t.setAttribute('fill','var(--muted)');
+      t.setAttribute('text-anchor', i===0?'start':(i===weeks.length-1?'end':'middle'));
+      t.textContent = 'нед. ' + (i+1);
+      labels.appendChild(t);
+    });
+  })();
+
+  // --- bar chart: acquisition channels ---
+  (function drawBars(){
+    var data = [
+      {l:'Поиск', v:2840, c:'var(--teal)'},
+      {l:'Рефералы', v:2110, c:'var(--accent)'},
+      {l:'Соцсети', v:1760, c:'var(--teal)'},
+      {l:'Рассылка', v:980, c:'var(--accent)'},
+      {l:'Прямые', v:722, c:'var(--teal)'}
+    ];
+    var W=280,H=220,padT=10,padB=34,padL=10,padR=10;
+    var max = Math.max.apply(null, data.map(function(d){return d.v;}));
+    var bw = (W-padL-padR)/data.length;
+    var g = document.getElementById('bars');
+    var svg = g.ownerSVGElement;
+    data.forEach(function(d,i){
+      var h = (H-padT-padB) * (d.v/max);
+      var x = padL + i*bw + bw*0.18;
+      var w = bw*0.64;
+      var y = H-padB-h;
+      var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      rect.setAttribute('x',x); rect.setAttribute('y',y);
+      rect.setAttribute('width',w); rect.setAttribute('height',h);
+      rect.setAttribute('rx',3); rect.setAttribute('fill',d.c);
+      g.appendChild(rect);
+      var val = document.createElementNS('http://www.w3.org/2000/svg','text');
+      val.setAttribute('x',x+w/2); val.setAttribute('y',y-6);
+      val.setAttribute('text-anchor','middle'); val.setAttribute('font-size','10');
+      val.setAttribute('fill','var(--ink)');
+      val.textContent = d.v;
+      g.appendChild(val);
+      var lab = document.createElementNS('http://www.w3.org/2000/svg','text');
+      lab.setAttribute('x',x+w/2); lab.setAttribute('y',H-padB+14);
+      lab.setAttribute('text-anchor','middle'); lab.setAttribute('font-size','9.5');
+      lab.setAttribute('fill','var(--muted)');
+      lab.textContent = d.l;
+      g.appendChild(lab);
+    });
+  })();
+
+  // --- cohort retention table ---
+  (function drawCohort(){
+    var cohorts = [
+      {name:'нед. 1 — 23 сен', v:[100,64,51,44,39]},
+      {name:'нед. 2 — 30 сен', v:[100,61,49,42,null]},
+      {name:'нед. 3 — 7 окт',  v:[100,67,53,null,null]},
+      {name:'нед. 4 — 14 окт', v:[100,70,null,null,null]},
+      {name:'нед. 5 — 21 окт', v:[100,null,null,null,null]}
+    ];
+    function color(v){
+      if (v==null) return 'transparent';
+      var t = v/100;
+      var r = Math.round(239 - t*(239-47));
+      var g = Math.round(233 - t*(233-111));
+      var b = Math.round(216 - t*(216-104));
+      return 'rgb('+r+','+g+','+b+')';
+    }
+    var tbl = document.getElementById('cohortTable');
+    var thead = '<thead><tr><th>Когорта</th><th>Нед. 0</th><th>Нед. 1</th><th>Нед. 2</th><th>Нед. 3</th><th>Нед. 4</th></tr></thead>';
+    var rows = cohorts.map(function(c){
+      var cells = c.v.map(function(v){
+        if (v==null) return '<td></td>';
+        var textColor = v>55 ? '#fff' : 'var(--ink)';
+        return '<td><span class="heat" style="background:'+color(v)+'; color:'+textColor+'">'+v+'</span></td>';
+      }).join('');
+      return '<tr><td>'+c.name+'</td>'+cells+'</tr>';
+    }).join('');
+    tbl.innerHTML = thead + '<tbody>'+rows+'</tbody>';
+  })();
+
+  // --- segment donut ---
+  (function drawDonut(){
+    var segs = [
+      {l:'Активные практики', v:38, c:'var(--teal)'},
+      {l:'Наблюдатели', v:29, c:'var(--accent)'},
+      {l:'Новички', v:20, c:'#8a9bb0'},
+      {l:'Уходящие', v:13, c:'var(--red)'}
+    ];
+    var svg = document.getElementById('donut');
+    var cx=110, cy=100, r=72, rInner=44;
+    var total = segs.reduce(function(a,s){return a+s.v;},0);
+    var angle = -Math.PI/2;
+    segs.forEach(function(s){
+      var frac = s.v/total;
+      var a0 = angle, a1 = angle + frac*Math.PI*2;
+      angle = a1;
+      var large = (a1-a0) > Math.PI ? 1 : 0;
+      var x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0);
+      var x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+      var xi0=cx+rInner*Math.cos(a1), yi0=cy+rInner*Math.sin(a1);
+      var xi1=cx+rInner*Math.cos(a0), yi1=cy+rInner*Math.sin(a0);
+      var d = 'M'+x0+','+y0+' A'+r+','+r+' 0 '+large+' 1 '+x1+','+y1+
+              ' L'+xi0+','+yi0+' A'+rInner+','+rInner+' 0 '+large+' 0 '+xi1+','+yi1+' Z';
+      var path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d',d); path.setAttribute('fill',s.c);
+      svg.appendChild(path);
+    });
+    var label = document.createElementNS('http://www.w3.org/2000/svg','text');
+    label.setAttribute('x',cx); label.setAttribute('y',cy-3);
+    label.setAttribute('text-anchor','middle'); label.setAttribute('font-size','20');
+    label.setAttribute('fill','var(--ink)'); label.setAttribute('font-family','var(--font-mono)');
+    label.textContent = total + '%';
+    svg.appendChild(label);
+    var label2 = document.createElementNS('http://www.w3.org/2000/svg','text');
+    label2.setAttribute('x',cx); label2.setAttribute('y',cy+14);
+    label2.setAttribute('text-anchor','middle'); label2.setAttribute('font-size','9');
+    label2.setAttribute('fill','var(--muted)'); label2.setAttribute('font-family','var(--font-mono)');
+    label2.textContent = 'ОХВАТ';
+    svg.appendChild(label2);
+
+    var body = document.getElementById('segTable');
+    body.innerHTML = segs.map(function(s){
+      return '<tr><td><span class="sw" style="background:'+s.c+'"></span></td><td>'+s.l+'</td><td style="text-align:right">'+s.v+'%</td></tr>';
+    }).join('');
+  })();
+
+  document.querySelectorAll('.pill').forEach(function(p){
+    p.addEventListener('click', function(){
+      if (p.textContent.indexOf('▾')>-1) return;
+      document.querySelectorAll('.pill').forEach(function(x){
+        if (x.textContent.indexOf('▾')===-1) x.classList.remove('active');
+      });
+      p.classList.add('active');
+    }, {passive:true});
+  });
+})();
+</script>
